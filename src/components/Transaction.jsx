@@ -15,10 +15,11 @@ function Transaction(props) {
     <>
       <li className={operator === "-" ? "minus" : "plus"}>
         {transaction.purpose}
+        <div>{transaction.date.toUTCString()}</div>
         <span>
-          {operator + "     "}
           {transaction.currency}
-          {Math.abs(transaction.amount)}
+          {" " + Math.abs(transaction.amount)}
+          {" " + operator}
         </span>
         <button
           className="delete-btn"

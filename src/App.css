@@ -18,6 +18,19 @@ body {
   margin: 0;
   font-family: 'Lato', sans-serif;
 }
+.scrollable-dropdown-menu {
+  max-height: 300px;
+  overflow-y: scroll;
+}
+
+.error-line{
+  display: flex;
+  flex-direction: column;
+  color: red;
+}
+.test{
+  display: block
+}
 
 .container {
   margin: 30px auto;

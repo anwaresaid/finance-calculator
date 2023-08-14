@@ -10,9 +10,10 @@ function AddTransaction() {
 
   const [amount, setAmount] = useState("");
   const [purpose, setPurpose] = useState("");
+  const [errors, setErrors] = useState({ text: [] });
 
   const dispatch = useDispatch();
-
+  const current = new Date();
   const formValidate = () => {
     if (
       amount.length === 0 ||
@@ -25,16 +26,12 @@ function AddTransaction() {
   };
 
   useEffect(() => {
-    console.log("form", formValidate());
     if (formValidation) {
       dispatch(toggleFormValidation());
     }
   }, [purpose, amount, selectedCurrency]);
 
   const addIncomes = (e) => {
-    console.log(formValidate());
-    console.log(purpose.length === 0);
-    console.log(selectedCurrency.length === 0);
     e.preventDefault();
     if (formValidate()) {
       dispatch(
@@ -43,6 +40,7 @@ function AddTransaction() {
           purpose: purpose,
           id: Math.floor(Math.random() * 1000000000),
           currency: selectedCurrency.key,
+          date: current,
         })
       );
       setAmount("");
@@ -50,35 +48,70 @@ function AddTransaction() {
     } else if (!formValidation) {
       dispatch(toggleFormValidation);
     }
+    settingsErrors();
+  };
+
+  const settingsErrors = () => {
+    let text = [];
+    if (amount.length === 0) {
+      text.push("please choose label");
+    }
+    if (purpose.length === 0) {
+      text.push("please choose amount");
+    }
+    if (Object.keys(selectedCurrency).length === 0) {
+      text.push("please choose currency");
+    }
+    setErrors({
+      ...errors,
+      text: [...text],
+    });
   };
   const addExpenses = (e) => {
     e.preventDefault();
     if (formValidate()) {
+      setErrors({});
       dispatch(
         addExpense({
           amount: amount,
           purpose: purpose,
           id: Math.floor(Math.random() * 1000000000),
           currency: selectedCurrency.key,
+          date: current,
         })
       );
       setAmount("");
       setPurpose("");
+      return;
     } else if (!formValidation) {
       dispatch(toggleFormValidation);
     }
+    settingsErrors();
   };
   return (
     <>
       <h3>
         <form>
           <div className="form-control">
-            <label htmlFor="text">Text</label>
+            {errors?.text ? (
+              errors.text?.map((e) => {
+                return (
+                  <div className="error-line">
+                    <span>
+                      {e} <br />
+                    </span>
+                  </div>
+                );
+              })
+            ) : (
+              <></>
+            )}
+            <label htmlFor="text">Label</label>
             <input
               type="text"
               value={purpose}
               onChange={(e) => setPurpose(e.target.value)}
-              placeholder="Enter text"
+              placeholder="Enter expense/income label"
             />
           </div>
           <div className="form-control">
